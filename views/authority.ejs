@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title><%= a.name %></title>
+	<!-- Styles -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="/styles/main.min.css">
+</head>
+
+<body class="bg-light">
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-light bg-white">
+			<div class="container">
+				<a class="navbar-brand" href="/">
+					<img src="/img/logo.svg" width="30" height="30" class="d-inline-block align-top mr-2" alt="">
+					<%= a.name %>
+				</a>
+				<a href="/" class="btn btn-light">Logout</a>
+			</div>
+		</nav>
+	</header>
+	<main>
+		<div class="container">
+			<div class="row mt-4 text-center">
+				<div class="col-12">
+					<!-- <img src="/img/qr.webp" alt="QR Code" class="qr-code shadow-sm"> -->
+					<img src="/img/doctor.svg" class="card-img-top" alt="Medical Authority">
+				</div>
+				<div class="col-12 mt-3">
+					<h2><%= a.name %></h2>
+					<p class="text-black-50"><strong>MBBS, MS</strong></p>
+				</div>
+				<div class="col-12 mt-3">
+					<button type="button" class="btn btn-info btn-lg shadow" id="new-session" data-toggle="modal"
+						data-target="#myModal">New
+						Session</button>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header" style="text-align: center;">
+					<h4 class="modal-title" style="text-align: center;">New Session</h4>
+				</div>
+				<div class="modal-body">
+					<!-- WebCam -->
+					<div id="loadingMessage" hidden="">⌛ Loading video...</div>
+					<canvas id="canvas" height="480" width="640" style="width: 100%;"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+	<script src="/javascripts/jsQR.js"></script>
+	<script src="index.js"></script>
+	<script>
+
+		$('#new-session').on('click', function () {
+
+			var userId;
+			var video = document.createElement("video");
+			var canvasElement = document.getElementById("canvas");
+			var canvas = canvasElement.getContext("2d");
+			var loadingMessage = document.getElementById("loadingMessage");
+			var animationId = null;
+
+			function drawLine(begin, end, color) {
+				canvas.beginPath();
+				canvas.moveTo(begin.x, begin.y);
+				canvas.lineTo(end.x, end.y);
+				canvas.lineWidth = 4;
+				canvas.strokeStyle = color;
+				canvas.stroke();
+			}
+
+			// Use facingMode: environment to attemt to get the front camera on phones
+			navigator.mediaDevices
+				.getUserMedia({ video: { facingMode: "environment" } })
+				.then(function (stream) {
+					video.srcObject = stream;
+					video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+					video.play();
+					requestAnimationFrame(tick);
+				});
+
+			function tick() {
+				loadingMessage.innerText = "⌛ Loading video...";
+
+				if (video.readyState === video.HAVE_ENOUGH_DATA) {
+					loadingMessage.hidden = true;
+					canvasElement.hidden = false;
+
+					canvasElement.height = video.videoHeight;
+					canvasElement.width = video.videoWidth;
+					canvas.drawImage(
+						video,
+						0,
+						0,
+						canvasElement.width,
+						canvasElement.height
+					);
+					var imageData = canvas.getImageData(
+						0,
+						0,
+						canvasElement.width,
+						canvasElement.height
+					);
+					var code = jsQR(imageData.data, imageData.width, imageData.height, {
+						inversionAttempts: "dontInvert"
+					});
+					if (code) {
+						drawLine(
+							code.location.topLeftCorner,
+							code.location.topRightCorner,
+							"#FF3B58"
+						);
+						drawLine(
+							code.location.topRightCorner,
+							code.location.bottomRightCorner,
+							"#FF3B58"
+						);
+						drawLine(
+							code.location.bottomRightCorner,
+							code.location.bottomLeftCorner,
+							"#FF3B58"
+						);
+						drawLine(
+							code.location.bottomLeftCorner,
+							code.location.topLeftCorner,
+							"#FF3B58"
+						);
+						userId = code.data;
+						window.location.pathname = "/<%= a.id %>/" + userId;
+						cancelAnimationFrame(animationId);
+					} else {
+						// loadingMessage.hidden = false;
+						// loadingMessage.innerText = "Sorry, no QR Code found!";
+						// canvasElement.hidden = true;
+					}
+				}
+				animationId = requestAnimationFrame(tick);
+			}
+		})
+	</script>
+</body>
+
+</html>

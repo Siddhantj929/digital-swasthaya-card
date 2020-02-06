@@ -1,0 +1,58 @@
+$primary: lightseagreen;
+
+$unit: 8px;
+
+$border-radius: 6px;
+
+.card-img-top {
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  object-fit: contain;
+  padding: 25px;
+  background: rgba($color: #000000, $alpha: 0.03);
+  margin: 0 auto;
+}
+
+.qr-code {
+  width: 150px;
+  background: white;
+  padding: 8px;
+}
+
+.block-chain {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 2rem;
+
+  .node {
+    position: relative;
+    padding: 2 * $unit 4 * $unit;
+    border-radius: 5px;
+    background: white;
+    max-width: 550px;
+    width: 100%;
+    margin: 2 * $unit 0;
+
+    &::before {
+      content: "";
+      height: 4 * $unit;
+      width: 2px;
+      background: #e0e0e0;
+      position: absolute;
+      bottom: 100%;
+      left: calc(50% - 2px);
+      z-index: -1;
+    }
+  }
+
+  &.user-chain {
+    .node:first-of-type {
+      &::before {
+        height: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title><%= patient.name %> | Report</title>
+	<!-- Styles -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="/styles/main.min.css">
+</head>
+
+<body class="bg-light">
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-light bg-white">
+			<div class="container">
+				<a class="navbar-brand" href="/">
+					<img src="/img/logo.svg" width="30" height="30" class="d-inline-block align-top mr-2" alt="">
+					<%= patient.name %>
+				</a>
+				<a href="/" class="btn btn-light">Logout</a>
+			</div>
+		</nav>
+	</header>
+	<main>
+		<div class="container">
+			<div class="row mt-4 text-center">
+				<div class="col-12">
+					<img src="<%= patient.qrURL %>" alt="QR Code" class="qr-code shadow-sm">
+					<!-- <img src="/img/doctor.svg" class="card-img-top" alt="Medical Authority"> -->
+				</div>
+				<div class="col-12 mt-3">
+					<h2><%= patient.name %></h2>
+					<p class="text-black-50"><strong>Last checkup:</strong> 13 Jan, 2020</p>
+				</div>
+				<div class="col-12 mt-3">
+					<div class="btn-group" role="group" aria-label="Basic example">
+						<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#diagnosis"
+							aria-expanded="false" aria-controls="diagnosis">Diagniosis</button>
+						<button type="button" class="btn btn-outline-primary" data-toggle="collapse" data-target="#tests"
+							aria-expanded="false" aria-controls="tests">Lab Tests</button>
+						<button type="button" class="btn btn-outline-primary" data-toggle="collapse" data-target="#prescriptions"
+							aria-expanded="false" aria-controls="prescriptions">Prescriptions</button>
+					</div>
+				</div>
+				<div class="col-12 mt-3">
+					<div class="collapse multi-collapse" id="diagnosis">
+						<div class="block-chain user-chain">
+							<% patient.nodes.forEach(function(node) { %>
+							<% if (node.status != "Active") { %>
+							<div class="node shadow-sm">
+								<p><%= node.diagnosis %></p>
+								<small class="text-muted"><strong>Date Issued: 3 Jan, 2020, <a href="#">Dr. Arnab
+											Mukherjee</a></strong></small>
+							</div>
+							<% } %>
+							<% }) %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<% patient.nodes.forEach(function(node) { %>
+	<div class="container" width="50%">
+		<!-- Modal -->
+		<div class="modal fade" id="modal-<%= node.id %>" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" style="margin-left: 250px;">Medical History</h4>
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+					<div class="modal-body">
+						<h4>Diagnosis</h4>
+						<p><%= node.diagnosis %></p>
+						<h4>Prescription</h4>
+						<p><%= node.prescription %></p>
+						<h4>Symptoms</h4>
+						<p><%= node.symptoms %></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<% }) %>
+</body>
+
+</html>
