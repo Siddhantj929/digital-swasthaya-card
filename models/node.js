@@ -14,18 +14,24 @@ const nodeModel = Schema(
     diagnosis: {
       type: String
     },
-    prescription: {
-      type: String
-    },
+    prescription: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Presc"
+      }
+    ],
     symptoms: {
       type: String
     },
     comments: {
       type: String
     },
-    testingsRecommended: {
-      type: String
-    },
+    testingsRecommended: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Tests"
+      }
+    ],
     testingsDone: [
       {
         name: String,

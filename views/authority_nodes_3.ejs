@@ -57,7 +57,7 @@
                     Mukherjee</a></strong></small>
             </div>
             <% } %>
-            <% }); %>
+            <% }) %>
           </div>
         </div>
       </div>
@@ -108,7 +108,7 @@
       </div>
     </div>
   </div>
-  <% }); %>
+  <% }) %>
   <!-- Modal -->
   <div id="myModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -118,7 +118,6 @@
           <h4 class="modal-title" style="text-align: center;">Complete Overview</h4>
         </div>
         <div class="modal-body">
-          <% if (a.role == "Medical Practitioner") { %>
           <form action="/node/<%= a.id %>/<%= patient.id %>" method="POST">
             <div class="form-group">
               <input type="hidden" name="patientId" value="<%= patient.id %>">
@@ -129,29 +128,10 @@
               <input name="diagnosis" type="text" class="form-control" id="exampleInputPassword1"
                 aria-describedby="emailHelp" placeholder="diagnosis">
             </div>
-            <div class="row">
-              <div class="col-12 prescriptions">
-                <h4>Prescriptions</h4>
-                <div class="row presc-row my-2">
-                  <div class="col">
-                    <input type="text" class="form-control" placeholder="name" name="name[]">
-                  </div>
-                  <div class="col">
-                    <input type="number" class="form-control" placeholder="quantity" name="quantity[]">
-                  </div>
-                  <div class="col">
-                    <select class="form-control" placeholder="dosage" name="dosage[]">
-                      <option>Early Empty Stomach</option>
-                      <option>Day</option>
-                      <option>Night</option>
-                      <option>Day and Night</option>
-                      <option>Weekly</option>
-                      <option>Monthly</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <a href="#" class="btn btn-outline-secondary btn-sm d-block my-2 mx-auto add-presc">Add more</a>
+            <div class="form-group">
+              <label for="prescription">Prescription</label>
+              <input name="prescription" class="form-control" id="prescription" type="longtext"
+                placeholder="prescription">
             </div>
             <div class="form-group">
               <label for="symptoms">Symptoms</label>
@@ -161,66 +141,13 @@
               <label for="comments">Comments</label>
               <input name="comments" type="text" class="form-control" id="exampleInputPassword1" placeholder="comments">
             </div>
-            <div class="row tests">
-              <h4>Testings Recommended</h4>
-              <div class="col-12 test-recommended my-1">
-                <div class="form-group">
-                  <input name="testingsRecommended[]" type="text" class="form-control" placeholder="Testing name">
-                </div>
-              </div>
-            </div>
-            <a href="#" class="btn btn-outline-secondary btn-sm d-block my-2 mx-auto add-test">Add more</a>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
-          <% } %>
-          <% if (a.role == "Pharmacy") { %>
-          <form action="/pharmacy/<%= a.id %>/<%= patient.id %>" method="POST">
             <div class="form-group">
-              <input type="hidden" name="patientId" value="<%= patient.id %>">
-              <input type="hidden" name="authorityId" value="<%= a.id %>">
-            </div>
-            <div class="row">
-              <div class="col-12 prescriptions">
-                <h4>Prescriptions</h4>
-                <% patient.prescription.forEach(function(e) { %>
-                <div class="row presc-row my-2">
-                  <div class="col">
-                    <%= e.name %>, <%= e.quantity %>, <%= e.dosage %>
-                  </div>
-                  <div class="col">
-                    <input type="number" class="form-control" placeholder="Price (in Rs.)" name="bill[]">
-                  </div>
-                </div>
-                <% }); %>
-              </div>
+              <label for="testingsRecommended">Testings Recommended</label>
+              <input name="testingsRecommended" type="text" class="form-control" id="exampleInputPassword1"
+                placeholder="testingsRecommended">
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
-          <% } %>
-          <% if (a.role == "Testing Lab") { %>
-          <form action="/lab/<%= a.id %>/<%= patient.id %>" method="POST">
-            <div class="form-group">
-              <input type="hidden" name="patientId" value="<%= patient.id %>">
-              <input type="hidden" name="authorityId" value="<%= a.id %>">
-            </div>
-            <div class="row">
-              <div class="col-12 prescriptions">
-                <h4>Tests</h4>
-                <% patient.testingsRecommended.forEach(function(e) { %>
-                <div class="row presc-row my-2">
-                  <div class="col">
-                    <%= e.name %>
-                  </div>
-                  <div class="col">
-                    <input type="file" class="form-control" placeholder="Relevent Files" name="files[]">
-                  </div>
-                </div>
-                <% }); %>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
-          <% } %>
         </div>
       </div>
     </div>
@@ -235,16 +162,6 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
     integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
     crossorigin="anonymous"></script>
-  <script>
-    $('.add-presc').click(function (e) {
-      e.preventDefault();
-      document.querySelector('.prescriptions').innerHTML += `<div class="row my-2">${$('.presc-row').html()}</div>`;
-    });
-    $('.add-test').click(function (e) {
-      e.preventDefault();
-      document.querySelector('.tests').innerHTML += `<div class="col-12 my-1">${$('.test-recommended').html()}</div>`;
-    });
-  </script>
 </body>
 
 </html>

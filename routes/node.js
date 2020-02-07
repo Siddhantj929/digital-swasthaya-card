@@ -4,6 +4,8 @@ const router = express.Router();
 // const io = require("../socket");
 // const User = require("../models/user");
 const Node = require("../models/node");
+const Test = require("../models/tests");
+const Presc = require("../models/prescription");
 // var otpGenerator = require("otp-generator");
 // const fetch = require("node-fetch");
 // const ElasticEmail = require("../services/email");
@@ -21,7 +23,40 @@ router.post("/:aId/:userId", async (req, res) => {
     console.log("in the route, going to create node");
     console.log(req.body);
 
-    const newNode = new Node(req.body);
+    const nodeBody = { ...req.body };
+    const prescs = [];
+    const tests = [];
+
+    nodeBody.name.forEach(async (e, i) => {
+      prescs.push(
+        await new Presc({
+          name: nodeBody.name[i],
+          quantity: nodeBody.quantity[i],
+          dosage: nodeBody.dosage[i],
+          patientId: req.params.userId,
+          suggestedBy: req.params.aId
+        }).save()
+      );
+    });
+
+    nodeBody.testingsRecommended.forEach(async (e, i) => {
+      tests.push(
+        await new Test({
+          name: e,
+          patientId: req.params.userId,
+          suggestedBy: req.params.aId
+        }).save()
+      );
+    });
+
+    delete nodeBody.name;
+    delete nodeBody.quantity;
+    delete nodeBody.dosage;
+
+    nodeBody.testingsRecommended = tests;
+    nodeBody.prescriptions = prescs;
+
+    const newNode = new Node(nodeBody);
     newNode.status = "COMPLETED";
     await newNode.save();
 

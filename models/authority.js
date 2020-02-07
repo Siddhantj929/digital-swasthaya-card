@@ -16,9 +16,7 @@ const authorityModel = Schema(
       required: true
     },
     role: {
-      type: String,
-      enum: ["Medical Institute/Hospital", "Doctor", "Chemist", "Testing Lab"],
-      default: "Doctor"
+      type: String
     },
     proof: {
       hospitalLicense: {

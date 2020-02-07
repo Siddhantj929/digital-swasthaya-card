@@ -1,5 +1,5 @@
 {
-  "name": "Digital Swasthaya Card",
+  "name": "digital-swasthaya-card",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -24,6 +24,7 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
+    "ejs-lint": "^1.0.1",
     "nodemon": "^1.19.4"
   }
 }
