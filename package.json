@@ -18,7 +18,7 @@
     "mongodb": "^3.3.3",
     "mongoose": "^5.7.5",
     "morgan": "~1.9.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.7",
     "otp-generator": "^1.1.0",
     "qrcode": "^1.4.2",
     "socket.io": "^2.3.0"
